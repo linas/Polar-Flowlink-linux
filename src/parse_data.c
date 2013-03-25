@@ -9,142 +9,116 @@ int hex2int(int i){
 	return atoi(c);
 }
 
-int parseUserData(unsigned char *buf, int bufsize, PGconn *db){
+int parseUserData(unsigned char *buf, int bufsize){
 
-	if(buf[2]!=0x14 && buf[3]!=0x0e){
-		printf("Buffer does not consist of user data!\n");
+	if(!(buf[2]==0x13 && buf[3]==0x0e)){
+		//printf("Buffer does not consist of user data! %x  %x \n",buf[2],buf[3]);
 		return 1;
 	}
-	sUserData ud;
-	ud.weight=(float)((buf[6]<<8)+buf[5])*0.045359;
-	ud.height=buf[7];
-	struct tm time;	
-	time.tm_sec=1;
-	time.tm_min=0;
-	time.tm_hour=0;
-	time.tm_mday=buf[8];
-	time.tm_mon=buf[9]-1;
-	time.tm_year=buf[10];
-	time.tm_isdst = -1;	
-	ud.birthdate=(long) mktime(&time);
-	ud.sex=buf[11];
-	ud.activity=buf[12];
-	ud.vo2max=buf[13];
-	ud.HRMax=buf[14];
-	time.tm_sec=0;
-	time.tm_min=hex2int(buf[18]);
-	time.tm_hour=hex2int(buf[19]);
-	time.tm_mday=buf[20];
-	time.tm_mon=buf[21]-1;
-	time.tm_year=buf[22]+100;
-	time.tm_isdst = -1;	
-	ud.editdate=(long) mktime(&time);
-	if(db!=NULL){
-		db_insert_udata(db,&ud);	
-	}
 
-	printf("weight=%.1f kg (%.1f lbs)\n", (double)((buf[6]<<8)+buf[5])*0.045359,(double)((buf[6]<<8)+buf[5])/10 );
-	printf("height=%d cm\n", buf[7]);
-	printf("birthdate=%d.%d.%d\n",buf[8],buf[9],1900+buf[10]);
-	printf("sex=%s\n", buf[11]?"Female":"Male");
-	printf("Activity=%d\n",buf[12]);
-	printf("VO2max=%d\n",buf[13]);
-	printf("HRmax=%d\n",buf[14]);
-	printf("Information last edited=%d.%d.%d %x:%x\n",buf[20],buf[21],buf[22],buf[19],buf[18]);
-
+	//printf("weight=%.1f kg\n", (double)((buf[6]<<8)+buf[5])*0.045359 );
+	//printf("height=%d cm\n", buf[7]);
+	//printf("birthdate=%d.%d.%d\n",buf[8],buf[9],1900+buf[10]);
+	//printf("sex=%s\n", buf[14]?"male":"female");
+	//printf("Activity (Top=0,High=1,Mid=2)=%d\n",buf[15]);
+	//printf("VO2max=%d\n",buf[12]);
+    //printf("HRmin=%d\n",buf[13]);
+	//printf("HRmax=%d\n",buf[11]);
+	//printf("Information last edited=%d.%d.%d %x:%x:%x\n",buf[19],buf[20],buf[21],buf[18],buf[17],buf[16]);
+	printf("'usersettings':{'maxhr':%d,'resthr':%d,'weight':%d,'height':%d,'vo2max':%d,'sex':'%s','activity':'middle','birthdate':'%d-%02d-%02d'}",buf[11],buf[13],(int)(((buf[6]<<8)+buf[5])*0.045359),buf[7],buf[12],buf[14]?"male":"female",1900+buf[10],buf[9],buf[8]);
+//{'usersettings':{'maxhr':196,'resthr':58,'weight':70,'height':179,'vo2max':44,'sex':'male','activity':'middle','birthdate':'1977-08-13'}}
 	return 0;
 }
 
 int parseCommand1(unsigned char *buf, int bufsize){
 	if(buf[2]!=0x3c && buf[3]!=0x00){
-		printf("Buffer does not consist of training data!\n");
+		//printf("Buffer does not consist of training data! %x  %x \n",buf[2],buf[3]);
 		return -1;
 	}
 
-	printf("Number of saved trainings=%d\n",buf[11]);
+	//printf("Number of saved trainings=%d\n",buf[11]);
 	return buf[11];
 }
 
 
 
-int parseTrainingData(unsigned char *buf, int bufsize, PGconn *db){
+int parseTrainingData(unsigned char *buf, int bufsize,bool end){
 
-	if(buf[2]!=0x2a && buf[3]!=0x06){
-		printf("Buffer does not consist of training data!\n");
+	if(!(buf[2]==0x3D && buf[3]==0x06)){
+		//printf("Buffer does not consist of training data! %x  %x \n",buf[2],buf[3]);
 		return 1;
 	}
 	
-	sTraining trn;
-	struct tm time;	
-	trn.id=buf[5]+1;
-	trn.duration=hex2int(buf[8])*3600+hex2int(buf[7])*60+hex2int(buf[6]);
-
-	time.tm_sec=hex2int(buf[12]);
-	time.tm_min=hex2int(buf[13]);
-	time.tm_hour=hex2int(buf[14]);
-	time.tm_mday=buf[9];
-	time.tm_mon=buf[10]-1;
-	time.tm_year=buf[11]+100;
-	time.tm_isdst = -1;	
-	trn.starttime=(long) mktime(&time);
-	trn.timeinzone1=hex2int(buf[18])*3600+hex2int(buf[17])*60+hex2int(buf[16]);
-	trn.timeinzone2=hex2int(buf[21])*3600+hex2int(buf[20])*60+hex2int(buf[19]);
-	trn.timeinzone3=hex2int(buf[24])*3600+hex2int(buf[23])*60+hex2int(buf[22]);
-	trn.z1hr[0]=buf[25];	
-	trn.z1hr[1]=buf[26];	
-	trn.z2hr[0]=buf[27];	
-	trn.z2hr[1]=buf[28];	
-	trn.z3hr[0]=buf[29];	
-	trn.z3hr[1]=buf[30];	
-	trn.calories=(buf[32]<<8)+buf[31];
-	trn.fatprocent=buf[33];
-	trn.avgHr=buf[34];
-	trn.maxHr=buf[35];
-	trn.HRMax=buf[36];
-
-	if(db!=NULL){
-		db_insert_trn(db,&trn);
-	}
-
-	printf("training_id=%d\n",buf[5]);
-	printf("training duration=%x:%x:%x\n",buf[8],buf[7],buf[6]);
-	printf("start time=%d.%d.%d %x:%x:%x\n", buf[9],buf[10],2000+buf[11], buf[14],buf[13],buf[12]);
-	printf("Time in zone 1=%x:%x:%x ",buf[18],buf[17],buf[16]);
-	printf("in zone 2=%x:%x:%x ",buf[21],buf[20],buf[19]);
-	printf("in zone 3=%x:%x:%x'\n",buf[24],buf[23],buf[22]);
-	printf("Zone1 HR limits (%d,%d), Zone2 HR limits (%d,%d), Zone3 HR limits (%d,%d)\n",buf[25],buf[26],buf[27],buf[28],buf[29],buf[30]);
-	printf("Calories burned=%d\n",(buf[32]<<8)+buf[31]);
-	printf("Fat burn percentage=%d %\n",buf[33]);
-	printf("Average HR=%d\n", buf[34]);
-	printf("Max HR=%d\n",buf[35]);
-	printf("HRmax=%d\n", buf[36]);
+	//printf("training_id=%d\n",buf[5]);
+	//printf("training duration=%d:%d:%d\n",buf[25],decode(buf[24]),decode(buf[23]));
+	//printf("start time=%d-%d-%d %x:%x:%x.000\n",2013,buf[18]/32, buf[18]%32, buf[22],buf[21],buf[20]);
+	//printf("Calories burned=%d\n",(buf[30]<<8)+buf[29]);
+	//printf("Average HR=%d\n", buf[26]);
+	//printf("Max HR=%d\n",buf[27]);
+    printf("{'id':%d,'time':'%d-%02d-%02d %02x:%02x:%02x.000','duration':%d,'note':'','exercicecal':%d,'exercicehrmin':'','exercicehravg':%d,'exercicehrmax':%d%s",buf[5],2013,buf[18]/32, buf[18]%32, buf[22],buf[21],buf[20],buf[25]*3600+decode(buf[24])*60+decode(buf[23]),((buf[30]<<8)+buf[29]),buf[26],buf[27],(end)?",":"");
 	return 0;
+}
+int parseSportZones(unsigned char *buf, int bufsize){
+    //printf("Time in Sport Zone 1=%x:%x:%x ",buf[34],buf[33],buf[32]);
+	//printf("in Sport Zone 2=%x:%x:%x ",buf[37],buf[36],buf[35]);
+	//printf("in Sport Zone 3=%x:%x:%x'\n",buf[40],buf[39],buf[38]);
+	//printf("in Sport Zone 4=%x:%x:%x ",buf[43],buf[42],buf[41]);
+	//printf("in Sport Zone 5=%x:%x:%x'\n",buf[46],buf[45],buf[44]);
+	printf(",'zones':[");
+    printf("{'id':0,'zonetime':%d},",buf[34]*3600+buf[33]*60+buf[32]);
+    printf("{'id':1,'zonetime':%d},",buf[37]*3600+buf[36]*60+buf[35]);
+    printf("{'id':2,'zonetime':%d},",buf[40]*3600+buf[39]*60+buf[38]);
+    printf("{'id':3,'zonetime':%d},",buf[43]*3600+buf[42]*60+buf[41]);
+    printf("{'id':4,'zonetime':%d}",buf[46]*3600+buf[45]*60+buf[44]);
+	printf("]");
+	return buf[52];
+}
+
+int parseLap14(unsigned char *buf, int bufsize,int nb){
+    //printf("Sport Zone1 HR limits (%d,%d), Zone2 HR limits (%d,%d), Zone3 HR limits (%d,%d) , Zone4 HR limits (%d,%d), Zone5 HR limits (%d,max)\n",buf[12],buf[13],buf[13],buf[14],buf[14],buf[15],buf[15],buf[16],buf[16]);
+    if(nb>1){
+        int i=0;
+        printf(",'laps':[");
+	    for(i=0;i<nb;i++){
+			//printf("Lap %d \n",nb-i);
+	        //printf("lap duration = %d:%d:%d\n",buf[12+6*i],decode(buf[11+6*i]),decode(buf[10+6*i]));
+	       // printf("HR = %d, HR moy = %d ,HR max = %d \n",buf[13+6*i],buf[14+6*i],buf[15+6*i]);
+	        printf("{'id':%d,'laptime':%d,'hr':%d,'hravg':%d,'hrmax':%d}%s",nb-i-1,(buf[12+6*i]*3600+decode(buf[11+6*i])*60+decode(buf[10+6*i]))*10,buf[13+6*i],buf[14+6*i],buf[15+6*i],(i>=nb-1)?"]}":",");
+		}
+    }else{
+    	printf(",'laps':[]}");
+    }
+	return 0;
+}
+
+int parseLap59(unsigned char *buf, int bufsize,int nb){
+return 1;
+}
+
+
+int decode(int coded){
+    int j = coded;
+    if(j>=0x80){ j= j-0x80;}
+    if(j>=0x40){ j= j-0x40;}
+    return j;
 }
 
 int parseVO2maxMeasurements(unsigned char *buf, int bufsize){
 	int i;
-	if(buf[2]!=0x21 && buf[3]!=0x01){
-		printf("Buffer does not consist of VO2max data!\n");
+	if(buf[2]!=0x3D && buf[3]!=0x01){
+		//printf("Buffer does not consist of VO2max data!\n");
 		return 1;
 	}
-	printf("Number of measurements: %d\n", buf[5]);
+	//printf("Number of measurements: %d\n", buf[5]);
 
 	for(i=0;i<buf[5];i++){
-	printf("%d.%d.%d %x:%x :: VO2max=%d\n", buf[6+6*i], buf[7+6*i], buf[8+6*i], buf[11+6*i], buf[10+6*i], buf[9+6*i]);
+	//printf("%d.%d.%d :: VO2max=%d\n", buf[6+4*i], buf[7+4*i], buf[8+4*i], buf[9+4*i]);
 	}
 	return 1;
 
 }
 
 int parseActiveProgram(unsigned char *buf, int bufsize){
-	if(buf[2]!=0x31 && buf[3]!=0x04){
-		printf("Buffer does not consist of active program data!\n");
-		return 1;
-	}
-	printf("Active program has following targets!\n");
-	printf("Total calories to be spent: %d\n", (buf[20]<<8)+buf[19]);
-	printf("Time in zone 1: %x:%x:%x\n", buf[23],buf[22],buf[21]);
-	printf("Time in zone 1: %x:%x:%x\n", buf[26],buf[25],buf[24]);
-	printf("Time in zone 1: %x:%x:%x\n", buf[29],buf[28],buf[27]);
+
 	return 1;
 }

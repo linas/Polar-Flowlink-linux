@@ -24,21 +24,21 @@ hid_device *openHID(int vid,int pid){
 	res = hid_get_manufacturer_string(handle, wstr, MAX_STR);
 	if (res < 0)
 		printf("Unable to read manufacturer string\n");
-	printf("Manufacturer String: %ls\n", wstr);
+	//printf("Manufacturer String: %ls\n", wstr);
 
 	// Read the Product String
 	wstr[0] = 0x0000;
 	res = hid_get_product_string(handle, wstr, MAX_STR);
 	if (res < 0)
 		printf("Unable to read product string\n");
-	printf("Product String: %ls\n", wstr);
+	//printf("Product String: %ls\n", wstr);
 
 	// Read the Serial Number String
 	wstr[0] = 0x0000;
 	res = hid_get_serial_number_string(handle, wstr, MAX_STR);
 	if (res < 0)
 		printf("Unable to read serial number string\n");
-	printf("Serial Number String: (%d) %ls", wstr[0], wstr);
+	//printf("Serial Number String: (%d) %ls", wstr[0], wstr);
 	printf("\n");
 
 	// Read Indexed String 1
@@ -46,7 +46,7 @@ hid_device *openHID(int vid,int pid){
 	res = hid_get_indexed_string(handle, 1, wstr, MAX_STR);
 	if (res < 0)
 		printf("Unable to read indexed string 1\n");
-	printf("Indexed String 1: %ls\n", wstr);
+	//printf("Indexed String 1: %ls\n", wstr);
 
 	// Set the hid_read() function to be non-blocking.
 	hid_set_nonblocking(handle, 1);
@@ -94,61 +94,68 @@ int poolPresence(hid_device *handle){
 	}
 	else {
 		// Print out the returned buffer.
-		printf("Feature Report\n   ");
-		for (i = 0; i < res; i++)
-			printf("%02hhx ", buf[i]);
-		printf("\n");
+		//printf("Feature Report\n   ");
+		//for (i = 0; i < res; i++)
+		//	printf("%02hhx ", buf[i]);
+		//printf("\n");
 	}
 	if(buf[2]==0x02 && buf[3]==0x0b){
 		printf("HRM not present.\n");
 		return 0;
 	}
-	printf("HRM present.\n");
+	//printf("HRM present.\n");
 	return 1;
 }
 
 int executeCommand1(hid_device *handle, unsigned char *buf, int bufsize, unsigned char *command, int commandsize, int showdata){
-	int res;
+	int res,i;
 	memset(buf,0,bufsize*sizeof(unsigned char));
 	memcpy(buf,command,commandsize*sizeof(unsigned char));
+	if (showdata==TRUE){
+		for (i = 0; i < commandsize; i++)
+			printf("%02hhx ", command[i]);
+		printf("\n");
+	}
 	res = hid_write(handle, buf, 17);
 	if (res < 0) {
 		printf("Unable to write()\n");
 		printf("Error: %ls\n", hid_error(handle));
 		return 0;
 	}
-	res=readData(handle,buf,bufsize, showdata);
+	res=readData(handle,buf,bufsize, showdata,0);
 	return res;
 
 }
 
-int readData(hid_device *handle, unsigned char *buf, int bufsize, int showdata){
+int readData(hid_device *handle, unsigned char *buf, int bufsize, int showdata,int offset){
 	int i,res;
+
 	memset(buf,0,bufsize*sizeof(unsigned char));
+
 	res = 0;
-	for(i=1;i<5;i++) {
+	for(i=1;i<15;i++) {
 		res = hid_read(handle, buf, bufsize*sizeof(unsigned char));
 		if (res > 1) break;
 		if (res == 0){
-			printf("waiting...\n");
+			//printf("waiting...\n");
 			usleep(500*1000);
 		}
 		if (res < 0)
 			printf("Unable to read()\n");
 	}
 	if (res<=0) {
-		printf("No data received!\n");
+		//printf("No data received!\n");
 		return 0;
 	}
 
-	printf("Data received:\n   ");
+	//printf("Data received:\n   ");
 	// Print out the returned buffer.
 	if (showdata==TRUE){
 		for (i = 0; i < res; i++)
 			printf("%02hhx ", buf[i]);
 		printf("\n");
 	}
-	return 1;
+	return res;
 
 
 }

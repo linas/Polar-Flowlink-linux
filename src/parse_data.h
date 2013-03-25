@@ -1,5 +1,8 @@
 #ifndef __PARSE_DATA_H
 #define __PARSE_DATA_H
+#define true 1 
+#define false 0 
+typedef int bool;
 
 typedef struct {
 	int id;
@@ -34,9 +37,13 @@ typedef struct {
 #include "database.h"
 
 int hex2int(int i);
+int decode(int i);
 int parseCommand1(unsigned char *buf, int bufsize);
-int parseUserData(unsigned char *buf, int bufsize, PGconn *db);
-int parseTrainingData(unsigned char *buf, int bufsize, PGconn *db);
+int parseUserData(unsigned char *buf, int bufsize);
+int parseTrainingData(unsigned char *buf, int bufsize,bool end);
+int parseLap14(unsigned char *buf, int bufsize,int nb);
+int parseSportZones(unsigned char *buf, int bufsize);
+int parseLap59(unsigned char *buf, int bufsize,int nb);
 int parseVO2maxMeasurements(unsigned char *buf, int bufsize);
 int parseActiveProgram(unsigned char *buf, int bufsize);
 #endif
