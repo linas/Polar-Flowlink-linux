@@ -20,7 +20,7 @@ then run ``make'' in command line: make
 * How to use
 
 Put your RS300X on Polar Flowlink then execute :
-./bin/polar > polardata
+sudo ./bin/polar > polardata
 python polarwritexml.py
 
 * Inclusion of files from other authors
