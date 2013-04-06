@@ -54,9 +54,6 @@ hid_device *openHID(int vid,int pid){
 	// Try to read from the device. There shoud be no
 	// data here, but execution should not block.
 	res = hid_read(handle, buf, 17);
-
-
-
 	// Send a Feature Report to the device
 	buf[0] = 0x2;
 	buf[1] = 0xa0;
@@ -67,10 +64,6 @@ hid_device *openHID(int vid,int pid){
 	if (res < 0) {
 		printf("Unable to send a feature report.\n");
 	}
-
-	
-
-
 	return handle;
 }
 
@@ -83,7 +76,7 @@ void closeHID(hid_device *handle){
 int poolPresence(hid_device *handle){
 	unsigned char buf[256];
 	memset(buf,0,sizeof(buf));
-	int res,i;
+	int res;
 
 	// Read a Feature Report from the device
 	buf[0] = 0x2;
@@ -91,13 +84,6 @@ int poolPresence(hid_device *handle){
 	if (res < 0) {
 		printf("Unable to get a feature report.\n");
 		printf("%ls", hid_error(handle));
-	}
-	else {
-		// Print out the returned buffer.
-		//printf("Feature Report\n   ");
-		//for (i = 0; i < res; i++)
-		//	printf("%02hhx ", buf[i]);
-		//printf("\n");
 	}
 	if(buf[2]==0x02 && buf[3]==0x0b){
 		printf("HRM not present.\n");
@@ -147,9 +133,6 @@ int readData(hid_device *handle, unsigned char *buf, int bufsize, int showdata,i
 		//printf("No data received!\n");
 		return 0;
 	}
-
-	//printf("Data received:\n   ");
-	// Print out the returned buffer.
 	if (showdata==TRUE){
 		for (i = 0; i < res; i++)
 			printf("%02hhx ", buf[i]);
