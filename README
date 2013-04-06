@@ -17,6 +17,12 @@ For driver: libusb-dev, libudev-dev, libpq-dev
 firstly create bin directory in the project tree: mkdir bin
 then run ``make'' in command line: make
 
+* How to use
+
+Put your RS300X on Polar Flowlink then execute :
+./bin/polar > polardata
+python polarwritexml.py
+
 * Inclusion of files from other authors
 
 Part of package includes hidapi project, licensed under GPLv3, BSD and HIDAPI license. Terms under GPLv3 are chosen in this project.
