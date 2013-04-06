@@ -64,18 +64,20 @@ int parseSportZones(unsigned char *buf, int bufsize){
 	//printf("in Sport Zone 3=%x:%x:%x'\n",buf[40],buf[39],buf[38]);
 	//printf("in Sport Zone 4=%x:%x:%x ",buf[43],buf[42],buf[41]);
 	//printf("in Sport Zone 5=%x:%x:%x'\n",buf[46],buf[45],buf[44]);
+
 	printf(",'zones':[");
-    printf("{'id':0,'zonetime':%d},",buf[34]*3600+buf[33]*60+buf[32]);
-    printf("{'id':1,'zonetime':%d},",buf[37]*3600+buf[36]*60+buf[35]);
-    printf("{'id':2,'zonetime':%d},",buf[40]*3600+buf[39]*60+buf[38]);
-    printf("{'id':3,'zonetime':%d},",buf[43]*3600+buf[42]*60+buf[41]);
-    printf("{'id':4,'zonetime':%d}",buf[46]*3600+buf[45]*60+buf[44]);
+    printf("{'id':0,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},",buf[34],buf[33],buf[32],buf[22],buf[23]);
+    printf("{'id':1,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},",buf[37],buf[36],buf[35],buf[24],buf[25]);
+    printf("{'id':2,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},",buf[40],buf[39],buf[38],buf[26],buf[27]);
+    printf("{'id':3,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},",buf[43],buf[42],buf[41],buf[28],buf[29]);
+    printf("{'id':4,'zonetime':'P%xH%xM%xS','min':%d,'max':%d}",buf[46],+buf[45],buf[44],buf[30],buf[31]);
 	printf("]");
 	return buf[52];
 }
 
 int parseLap14(unsigned char *buf, int bufsize,int nb){
     //printf("Sport Zone1 HR limits (%d,%d), Zone2 HR limits (%d,%d), Zone3 HR limits (%d,%d) , Zone4 HR limits (%d,%d), Zone5 HR limits (%d,max)\n",buf[12],buf[13],buf[13],buf[14],buf[14],buf[15],buf[15],buf[16],buf[16]);
+
     if(nb>1){
         int i=0;
         printf(",'laps':[");
