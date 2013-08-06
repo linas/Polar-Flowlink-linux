@@ -28,7 +28,9 @@ int parseTrainingData(unsigned char *buf, int bufsize,bool end){
 	if(!(buf[2]==0x3D && buf[3]==0x06)){
 		return 1;
 	}
-    printf("{'id':%d,'time':'%d-%02d-%02d %02x:%02x:%02x.000','duration':%d,'note':'','exercicecal':%d,'exercicehrmin':'','exercicehravg':%d,'exercicehrmax':%d%s",buf[5],2013,buf[18]/32, buf[18]%32, buf[22],buf[21],buf[20],buf[25]*3600+decode(buf[24])*60+decode(buf[23]),((buf[30]<<8)+buf[29]),buf[26],buf[27],(end)?",":"");
+	int j = buf[19]*256+buf[18];
+	int k = j/32;
+    printf("{'id':%d,'time':'%d-%02d-%02d %02x:%02x:%02x.000','duration':%d,'note':'','exercicecal':%d,'exercicehrmin':'','exercicehravg':%d,'exercicehrmax':%d%s",buf[5],2000+k/16,k%16, j%32, buf[22],buf[21],buf[20],buf[25]*3600+decode(buf[24])*60+decode(buf[23]),((buf[30]<<8)+buf[29]),buf[26],buf[27],(end)?",":"");
 	return 0;
 }
 
