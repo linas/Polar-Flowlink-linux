@@ -10,7 +10,7 @@
 int main(int argc, char* argv[])
 {
 	unsigned char buf[256];
-    unsigned char data[256];
+	unsigned char data[256];
 	hid_device *handle;
 	int i, n,present;
 
@@ -33,9 +33,11 @@ int main(int argc, char* argv[])
     You should have received a copy of the GNU General Public License\n\
     along with this program.  If not, see <http://www.gnu.org/licenses/>.\n\n\n\
     */
-	handle=openHID(0x0da4,0x0003);
-	if(handle==NULL){
-		printf("Error, could not connect to Polar FlowLink. Is Flowlink connected and do you have privileges? Maybe you should suid the program?\n");
+	handle = openHID(0x0da4, 0x0003);
+	if (handle==NULL) {
+		fprintf(stderr, "Error: Could not connect to Polar FlowLink. "
+		                "Is Flowlink connected and do you have privileges?  "
+		                "Maybe you should suid the program?\n");
 		exit(1);
 	}
 
