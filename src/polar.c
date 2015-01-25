@@ -35,8 +35,8 @@ int main(int argc, char* argv[])
     */
 	handle = openHID(0x0da4, 0x0003);
 	if (handle==NULL) {
-		fprintf(stderr, "Error: Could not connect to Polar FlowLink. "
-		                "Is Flowlink connected and do you have privileges?  "
+		fprintf(stderr, "Error: Could not connect to Polar FlowLink.\n"
+		                "Is Flowlink connected and do you have privileges?\n"
 		                "Maybe you should suid the program?\n");
 		exit(1);
 	}

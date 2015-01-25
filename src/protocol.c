@@ -88,18 +88,20 @@ int poolPresence(hid_device *handle)
 		fprintf(stderr, "%ls", hid_error(handle));
 	}
 	if (buf[2]==0x02 && buf[3]==0x0b){
-		fprintf(stderr, "Error: HRM not present.\n");
+		fprintf(stderr, "Error: HRM not detected. "
+		                "Is it correctly aligned on the FlowLink?\n");
 		return 0;
 	}
 	fprintf(stderr, "HRM detected.\n");
 	return 1;
 }
 
-int executeCommand1(hid_device *handle, unsigned char *buf, int bufsize, unsigned char *command, int commandsize, int showdata){
+int executeCommand1(hid_device *handle, unsigned char *buf, int bufsize, unsigned char *command, int commandsize, int showdata)
+{
 	int res,i;
 	memset(buf,0,bufsize*sizeof(unsigned char));
 	memcpy(buf,command,commandsize*sizeof(unsigned char));
-	if (showdata==TRUE){
+	if (showdata==TRUE) {
 		for (i = 0; i < commandsize; i++)
 			printf("%02hhx ", command[i]);
 		printf("\n");
