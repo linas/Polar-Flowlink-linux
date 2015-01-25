@@ -41,43 +41,43 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 
-	present=poolPresence(handle);
-	if(present){
-        printf("{");
+	present = poolPresence(handle);
+	if (present) {
+		printf("{");
 		executeCommand1(handle,buf,256,cmd1,5, FALSE);
 		n=parseCommand1(buf,256);
-	
-        executeCommand1(handle,buf,256,cmd2,5, FALSE);
+
+		executeCommand1(handle,buf,256,cmd2,5, FALSE);
 		readData(handle,buf,256, FALSE,0);
 
 		executeCommand1(handle,buf,256,cmdusr,5, FALSE);
 		parseUserData(buf,256);
-        executeCommand1(handle,buf,256,cmd3,5, FALSE);
+		executeCommand1(handle,buf,256,cmd3,5, FALSE);
 		printf(",'exercices':[");
-		for(i=0;i<n;i++){
-			cmdtrain[5]=i;	
+		for(i=0;i<n;i++) {
+			cmdtrain[5] = i;
             //printf("Great, let's get personal data!  %d\n",i);
 			executeCommand1(handle,buf,256,cmdtrain,6, FALSE);
-			if(i==0){            
+			if (i==0) {
 				readData(handle,buf,256, FALSE,0);
 			}
 			parseTrainingData(buf,256,i>=n);
-            int l =readData(handle,buf,256, FALSE,0);           
-            int nb=parseSportZones(buf,256);
+			int l =readData(handle,buf,256, FALSE,0);
+			int nb=parseSportZones(buf,256);
 			//printf("Great, I found %d lap data! \n",nb);
-            l = readData(handle,buf,256, FALSE,0);
+			l = readData(handle,buf,256, FALSE,0);
 			memcpy (&data, &buf, l);
-            
-            if(nb>4){
+
+			if (nb>4) {
 				readData(handle,buf,l, FALSE,0);
 				memmove(buf+l-3,buf,l);
 				memmove(buf,data,l);
-                parseLap14(buf,256,nb);
+				parseLap14(buf,256,nb);
 				executeCommand1(handle,buf,256,cmd4,6, FALSE);
-			}else{
-                parseLap14(buf,256,nb);
-            }			
-		    printf("%s",(i>=n-1)?"]":",");
+			} else {
+				parseLap14(buf,256,nb);
+			}
+			printf("%s",(i>=n-1)?"]":",");
 		}
 
 		executeCommand1(handle,buf,256,cmd4,5, FALSE);
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 		while(buf[1]){
 		readData(handle,buf,256, FALSE,0);
 		}
-	}	
+	}
 	printf("}");
 	closeHID(handle);
 
