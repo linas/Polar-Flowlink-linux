@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
 		printf("{");
 		executeCommand1(handle,buf,256,cmd1,5, false);
 		n = parseCommand1(buf,256);
+		fprintf(stderr, "Great, found %d exercise records!\n", n);
 
 		executeCommand1(handle,buf,256,cmd2,5, false);
 		readData(handle,buf,256, false,0);
@@ -58,7 +59,8 @@ int main(int argc, char* argv[])
 		fflush(stdout);
 		for (i=0; i<n; i++) {
 			cmdtrain[5] = i;
-			fprintf(stderr, "Great, let's get personal data!  %d\n",i);
+			fprintf(stderr,
+				"Great, let's get personal data for record %d of %d\n", i, n);
 			executeCommand1(handle,buf,256,cmdtrain,6, false);
 			if (i==0) {
 				readData(handle,buf,256, false,0);
@@ -66,7 +68,10 @@ int main(int argc, char* argv[])
 			parseTrainingData(buf, 256, i>=n);
 			int l = readData(handle,buf, 256, false,0);
 			int nb = parseSportZones(buf, 256);
-			fprintf(stderr, "Great, I found %d lap data! \n", nb);
+			if (0 == nb)
+				fprintf(stderr, "No lap data found!\n");
+			else
+				fprintf(stderr, "Great, I found lap data for %d laps!\n", nb);
 			l = readData(handle, buf, 256, false,0);
 			memcpy (&data, &buf, l);
 

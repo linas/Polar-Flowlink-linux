@@ -42,16 +42,16 @@ int parseTrainingData(unsigned char *buf, int bufsize,bool end)
 
 int parseSportZones(unsigned char *buf, int bufsize)
 {
-	printf(",'zones':[");
-	printf("{'id':0,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
+	printf(",'zones':[\n");
+	printf("\t{'id':0,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
 		buf[34],buf[33],buf[32],buf[22],buf[23]);
-	printf("{'id':1,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
+	printf("\t{'id':1,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
 		buf[37],buf[36],buf[35],buf[24],buf[25]);
-	printf("{'id':2,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
+	printf("\t{'id':2,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
 		buf[40],buf[39],buf[38],buf[26],buf[27]);
-	printf("{'id':3,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
+	printf("\t{'id':3,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
 		buf[43],buf[42],buf[41],buf[28],buf[29]);
-	printf("{'id':4,'zonetime':'P%xH%xM%xS','min':%d,'max':%d}\n",
+	printf("\t{'id':4,'zonetime':'P%xH%xM%xS','min':%d,'max':%d}\n",
 		buf[46],+buf[45],buf[44],buf[30],buf[31]);
 	printf("]\n");
 	return buf[52];
