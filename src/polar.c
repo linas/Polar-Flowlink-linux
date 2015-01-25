@@ -31,12 +31,14 @@ int main(int argc, char* argv[])
 	int i, n;
 	bool present;
 
+	/* Commands for the polar RS300X HRM FlowLink */
 	unsigned char cmd1[256]={0x01,0x00,0x02,0x00,0x00};
 	unsigned char cmd2[256]={0x01,0x00,0x02,0x10,0x00};
 	unsigned char cmdusr[256]={0x01,0x00,0x02,0x0E,0x00};
 	unsigned char cmdtrain[256]={0x01,0x00,0x04,0x06,0x00,0x00};
 	unsigned char cmd3[256]={0x01,0x00,0x02,0x01,0x00};
 	unsigned char cmd4[256]={0x01,0x00,0x02,0x49,0x00};
+
 	handle = openHID(0x0da4, 0x0003);
 	if (handle == NULL) {
 		fprintf(stderr, "Error: Could not connect to Polar FlowLink.\n"
@@ -53,11 +55,11 @@ int main(int argc, char* argv[])
 		fprintf(stderr, "Great, found %d exercise records!\n", n);
 
 		executeCommand1(handle,buf,256,cmd2,5, false);
-		readData(handle,buf,256, false,0);
+		readData(handle, buf, 256, false,0);
 
-		executeCommand1(handle,buf,256,cmdusr,5, false);
+		executeCommand1(handle, buf, 256, cmdusr, 5, false);
 		parseUserData(buf,256);
-		executeCommand1(handle,buf,256,cmd3,5, false);
+		executeCommand1(handle, buf, 256,cmd3, 5, false);
 		printf(",\n'exercices':[\n");
 		fflush(stdout);
 		for (i=0; i<n; i++) {
