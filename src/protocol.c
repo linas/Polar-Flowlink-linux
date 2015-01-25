@@ -96,12 +96,13 @@ bool pollPresence(hid_device *handle)
 	return true;
 }
 
-int executeCommand1(hid_device *handle, unsigned char *buf, int bufsize, unsigned char *command, int commandsize, int showdata)
+int executeCommand1(hid_device *handle, unsigned char *buf, int bufsize,
+                    unsigned char *command, int commandsize, bool showdata)
 {
 	int res,i;
-	memset(buf,0,bufsize*sizeof(unsigned char));
-	memcpy(buf,command,commandsize*sizeof(unsigned char));
-	if (showdata==TRUE) {
+	memset(buf, 0, bufsize*sizeof(unsigned char));
+	memcpy(buf, command, commandsize*sizeof(unsigned char));
+	if (showdata == TRUE) {
 		for (i = 0; i < commandsize; i++)
 			printf("%02hhx ", command[i]);
 		printf("\n");
@@ -112,19 +113,19 @@ int executeCommand1(hid_device *handle, unsigned char *buf, int bufsize, unsigne
 		fprintf(stderr, "Error: %ls\n", hid_error(handle));
 		return 0;
 	}
-	res = readData(handle,buf,bufsize, showdata,0);
+	res = readData(handle, buf, bufsize, showdata, 0);
 	return res;
-
 }
 
-int readData(hid_device *handle, unsigned char *buf, int bufsize, int showdata,int offset)
+int readData(hid_device *handle, unsigned char *buf, int bufsize,
+             bool showdata, int offset)
 {
 	int i,res;
 
 	memset(buf,0,bufsize*sizeof(unsigned char));
 
 	res = 0;
-	for(i=1;i<15;i++) {
+	for(i=1; i<15; i++) {
 		res = hid_read(handle, buf, bufsize*sizeof(unsigned char));
 		if (res > 1) break;
 		if (res == 0){
@@ -138,7 +139,7 @@ int readData(hid_device *handle, unsigned char *buf, int bufsize, int showdata,i
 		//printf("No data received!\n");
 		return 0;
 	}
-	if (showdata==TRUE){
+	if (showdata) {
 		for (i = 0; i < res; i++)
 			printf("%02hhx ", buf[i]);
 		printf("\n");

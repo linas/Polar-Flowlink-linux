@@ -13,7 +13,7 @@ hid_device *openHID(int vid,int pid);
 void closeHID(hid_device *handle);
 bool pollPresence(hid_device *handle);
 int executeCommand1(hid_device *handle, unsigned char *buf, int bufsize,
-                    unsigned char *command, int commandsize, int showdata);
+                    unsigned char *command, int commandsize, bool showdata);
 int readData(hid_device *handle, unsigned char *buf, int bufsize,
-             int showdata,int offset);
+             bool showdata, int offset);
 #endif
