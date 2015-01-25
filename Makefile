@@ -9,7 +9,7 @@ CXXFLAGS ?= -Wall -g
 COBJS     = hidapi/linux/hid-libusb.o src/polar.o src/protocol.o src/parse_data.o
 CPPOBJS   = 
 OBJS      = $(COBJS) $(CPPOBJS)
-LIBS      = `pkg-config libusb-1.0 libudev --libs` -lpq
+LIBS      = `pkg-config libusb-1.0 libudev --libs` -lpq -lpthread
 INCLUDES ?= `pkg-config libusb-1.0 --cflags` -Ihidapi/hidapi
 
 
