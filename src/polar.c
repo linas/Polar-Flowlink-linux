@@ -12,7 +12,8 @@ int main(int argc, char* argv[])
 	unsigned char buf[256];
 	unsigned char data[256];
 	hid_device *handle;
-	int i, n,present;
+	int i, n;
+	bool present;
 
 	unsigned char cmd1[256]={0x01,0x00,0x02,0x00,0x00};
 	unsigned char cmd2[256]={0x01,0x00,0x02,0x10,0x00};
@@ -41,7 +42,7 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 
-	present = poolPresence(handle);
+	present = pollPresence(handle);
 	if (present) {
 		printf("{");
 		executeCommand1(handle,buf,256,cmd1,5, FALSE);
@@ -54,7 +55,7 @@ int main(int argc, char* argv[])
 		parseUserData(buf,256);
 		executeCommand1(handle,buf,256,cmd3,5, FALSE);
 		printf(",'exercices':[");
-		for(i=0;i<n;i++) {
+		for (i=0;i<n;i++) {
 			cmdtrain[5] = i;
             //printf("Great, let's get personal data!  %d\n",i);
 			executeCommand1(handle,buf,256,cmdtrain,6, FALSE);

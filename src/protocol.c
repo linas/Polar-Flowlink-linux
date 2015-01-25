@@ -74,7 +74,7 @@ void closeHID(hid_device *handle)
 	hid_exit();
 }
 
-int poolPresence(hid_device *handle)
+bool pollPresence(hid_device *handle)
 {
 	unsigned char buf[256];
 	memset(buf,0,sizeof(buf));
@@ -90,10 +90,10 @@ int poolPresence(hid_device *handle)
 	if (buf[2]==0x02 && buf[3]==0x0b){
 		fprintf(stderr, "Error: HRM not detected. "
 		                "Is it correctly aligned on the FlowLink?\n");
-		return 0;
+		return false;
 	}
 	fprintf(stderr, "HRM detected.\n");
-	return 1;
+	return true;
 }
 
 int executeCommand1(hid_device *handle, unsigned char *buf, int bufsize, unsigned char *command, int commandsize, int showdata)

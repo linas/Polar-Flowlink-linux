@@ -2,7 +2,8 @@
 #define __PARSE_DATA_H
 #define true 1 
 #define false 0 
-typedef int bool;
+
+#include <stdbool.h>
 
 
 int hex2int(int i);
