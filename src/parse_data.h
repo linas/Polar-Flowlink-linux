@@ -6,7 +6,6 @@
 #include <stdbool.h>
 
 
-int hex2int(int i);
 int decode(int i);
 int parseCommand1(unsigned char *buf, int bufsize);
 int parseUserData(unsigned char *buf, int bufsize);
