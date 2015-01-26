@@ -4,14 +4,14 @@
 #include <unistd.h>
 #include <string.h>
 
-hid_device *openHID(int vid,int pid)
+hid_device *openHID(int vid, int pid)
 {
 	wchar_t wstr[MAX_STR];
 	hid_device *handle;
 	int res;
 	unsigned char buf[256];
 	// Set up the command buffer.
-	memset(buf,0x00,sizeof(buf));
+	memset(buf, 0x0, sizeof(buf));
 	buf[0] = 0x01;
 	buf[1] = 0x81;
 
@@ -98,13 +98,14 @@ bool pollPresence(hid_device *handle)
 	return true;
 }
 
+/** Send a command to the device */
 int executeCommand1(hid_device *handle, unsigned char *buf, int bufsize,
                     unsigned char *command, int commandsize, bool showdata)
 {
 	int res,i;
 	memset(buf, 0, bufsize*sizeof(unsigned char));
 	memcpy(buf, command, commandsize*sizeof(unsigned char));
-	if (showdata == TRUE) {
+	if (showdata) {
 		for (i = 0; i < commandsize; i++)
 			printf("%02hhx ", command[i]);
 		printf("\n");
@@ -119,15 +120,16 @@ int executeCommand1(hid_device *handle, unsigned char *buf, int bufsize,
 	return res;
 }
 
+/** Read response from the device */
 int readData(hid_device *handle, unsigned char *buf, int bufsize,
              bool showdata, int offset)
 {
 	int i,res;
 
-	memset(buf,0,bufsize*sizeof(unsigned char));
+	memset(buf, 0, bufsize*sizeof(unsigned char));
 
 	res = 0;
-	for(i=1; i<15; i++) {
+	for (i=1; i<15; i++) {
 		res = hid_read(handle, buf, bufsize*sizeof(unsigned char));
 		if (res > 1) break;
 		if (res == 0){

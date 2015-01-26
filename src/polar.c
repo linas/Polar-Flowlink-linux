@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
 	unsigned char cmd3[256]    = {0x01,0x00,0x02,0x01,0x00};
 	unsigned char cmd4[256]    = {0x01,0x00,0x02,0x49,0x00};
 
+	/* Magic numbers for USB ... */
 	handle = openHID(0x0da4, 0x0003);
 	if (handle == NULL) {
 		fprintf(stderr, "Error: Could not connect to Polar FlowLink.\n"
@@ -48,61 +49,66 @@ int main(int argc, char* argv[])
 	}
 
 	present = pollPresence(handle);
-	if (present) {
-		printf("{");
-		executeCommand1(handle,buf,256,cmd1,5, false);
-		n = parseCommand1(buf,256);
-		fprintf(stderr, "Great, found %d exercise records!\n", n);
+	if (!present)
+	{
+		closeHID(handle);
+		exit(1);
+	}
 
-		executeCommand1(handle,buf,256,cmd2,5, false);
-		readData(handle, buf, 256, false,0);
+	printf("{");
+	executeCommand1(handle, buf, 256, cmd1, 5, false);
+	n = parseCommand1(buf, 256);
+	fprintf(stderr, "Great, found %d exercise records!\n", n);
 
-		executeCommand1(handle, buf, 256, cmdusr, 5, false);
-		parseUserData(buf,256);
-		executeCommand1(handle, buf, 256,cmd3, 5, false);
-		printf(",\n'exercices':[\n");
+	executeCommand1(handle,buf,256,cmd2,5, false);
+	readData(handle, buf, 256, false,0);
+
+	executeCommand1(handle, buf, 256, cmdusr, 5, false);
+	parseUserData(buf,256);
+	executeCommand1(handle, buf, 256,cmd3, 5, false);
+	printf(",\n'exercices':[\n");
+	fflush(stdout);
+	for (i=0; i<n; i++) {
+		cmdtrain[5] = i;
+		fprintf(stderr,
+			"Great, let's get personal data for record %d of %d\n", i, n);
+		executeCommand1(handle,buf,256,cmdtrain,6, false);
+		if (i==0) {
+			readData(handle,buf,256, false,0);
+		}
+		parseTrainingData(buf, 256, i>=n);
+		int l = readData(handle,buf, 256, false,0);
+		int nb = parseSportZones(buf, 256);
+		if (0 == nb)
+			fprintf(stderr, "No lap data found!\n");
+		else
+			fprintf(stderr, "Great, I found lap data for %d laps!\n", nb);
+		l = readData(handle, buf, 256, false, 0);
+		memcpy (&data, &buf, l);
+
+		if (nb > 4) {
+			readData(handle, buf, l, false,0);
+			memmove(buf+l-3, buf, l);
+			memmove(buf, data, l);
+			parseLap14(buf, 256, nb);
+			executeCommand1(handle,buf,256,cmd4,6, false);
+		} else {
+			parseLap14(buf,256,nb);
+		}
+		printf("%s", (i>=n-1) ? "]\n" : ",\n");
 		fflush(stdout);
-		for (i=0; i<n; i++) {
-			cmdtrain[5] = i;
-			fprintf(stderr,
-				"Great, let's get personal data for record %d of %d\n", i, n);
-			executeCommand1(handle,buf,256,cmdtrain,6, false);
-			if (i==0) {
-				readData(handle,buf,256, false,0);
-			}
-			parseTrainingData(buf, 256, i>=n);
-			int l = readData(handle,buf, 256, false,0);
-			int nb = parseSportZones(buf, 256);
-			if (0 == nb)
-				fprintf(stderr, "No lap data found!\n");
-			else
-				fprintf(stderr, "Great, I found lap data for %d laps!\n", nb);
-			l = readData(handle, buf, 256, false, 0);
-			memcpy (&data, &buf, l);
+	}
 
-			if (nb > 4) {
-				readData(handle, buf, l, false,0);
-				memmove(buf+l-3, buf, l);
-				memmove(buf, data, l);
-				parseLap14(buf, 256, nb);
-				executeCommand1(handle,buf,256,cmd4,6, false);
-			} else {
-				parseLap14(buf,256,nb);
-			}
-			printf("%s", (i>=n-1) ? "]\n" : ",\n");
-			fflush(stdout);
-		}
-
-		executeCommand1(handle,buf,256,cmd4,5, false);
-		while (buf[1]) {
-			readData(handle,buf,256, false,0);
-		}
-		executeCommand1(handle,buf,256,cmd4,5, false);
-		while (buf[1]) {
-			readData(handle,buf,256, false,0);
-		}
+	executeCommand1(handle,buf,256,cmd4,5, false);
+	while (buf[1]) {
+		readData(handle,buf,256, false,0);
+	}
+	executeCommand1(handle,buf,256,cmd4,5, false);
+	while (buf[1]) {
+		readData(handle,buf,256, false,0);
 	}
 	printf("}\n");
+
 	closeHID(handle);
 	fprintf(stderr, "Done!\n");
 
