@@ -11,6 +11,10 @@ http://www.polarpersonaltrainer.com with script `polarwritexml.py.`
 The FlowLink code here can connect to the Polar FT7, but currently
 returns garbage data for this model.
 
+This project differs from the original samop/Polar-Flowlink-linux
+project in that it removes all of teh SQL pieces, and focuses
+entirely on trying to extract meaningful data from the watch.
+
 * Supported OS
 
 GNU/Linux
