@@ -31,13 +31,16 @@ int main(int argc, char* argv[])
 	int i, n;
 	bool present;
 
+	// Mystery commands ... hardware ??
+	// unsigned char hrdwr[]      = {0x04, 0x42, 0x20};
+
 	/* Commands for the polar RS300X HRM FlowLink */
-	unsigned char cmd1[256]    = {0x01,0x00,0x02,0x00,0x00};
-	unsigned char cmd2[256]    = {0x01,0x00,0x02,0x10,0x00};
-	unsigned char cmdusr[256]  = {0x01,0x00,0x02,0x0E,0x00};
-	unsigned char cmdtrain[256]= {0x01,0x00,0x04,0x06,0x00,0x00};
-	unsigned char cmd3[256]    = {0x01,0x00,0x02,0x01,0x00};
-	unsigned char cmd4[256]    = {0x01,0x00,0x02,0x49,0x00};
+	unsigned char cmd1[]     = {0x01,0x00,0x02,0x00,0x00};
+	unsigned char cmd2[]     = {0x01,0x00,0x02,0x10,0x00};
+	unsigned char cmdusr[]   = {0x01,0x00,0x02,0x0E,0x00};
+	unsigned char cmdtrain[] = {0x01,0x00,0x04,0x06,0x00,0x00};
+	unsigned char cmd3[]     = {0x01,0x00,0x02,0x01,0x00};
+	unsigned char cmd4[]     = {0x01,0x00,0x02,0x49,0x00};
 
 	/* Magic numbers for USB ... */
 	handle = openHID(0x0da4, 0x0003);
@@ -55,26 +58,28 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 
+	// executeCommand1(handle, buf, 256, hrdwr, sizeof(hrdwr), true);
+
+	executeCommand1(handle, buf, 256, cmd1, sizeof(cmd1), false);
 	printf("{");
-	executeCommand1(handle, buf, 256, cmd1, 5, false);
 	n = parseCommand1(buf, 256);
 	fprintf(stderr, "Great, found %d exercise records!\n", n);
 
-	executeCommand1(handle,buf,256,cmd2,5, false);
-	readData(handle, buf, 256, false,0);
+	executeCommand1(handle, buf, 256, cmd2, sizeof(cmd2), false);
+	readData(handle, buf, 256, false, 0);
 
-	executeCommand1(handle, buf, 256, cmdusr, 5, false);
-	parseUserData(buf,256);
-	executeCommand1(handle, buf, 256,cmd3, 5, false);
-	printf(",\n'exercices':[\n");
+	executeCommand1(handle, buf, 256, cmdusr, sizeof(cmdusr), false);
+	parseUserData(buf, 256);
+	executeCommand1(handle, buf, 256, cmd3, sizeof(cmd3), false);
+	printf(",\n'exercizes':[\n");
 	fflush(stdout);
 	for (i=0; i<n; i++) {
 		cmdtrain[5] = i;
 		fprintf(stderr,
 			"Great, let's get personal data for record %d of %d\n", i, n);
-		executeCommand1(handle,buf,256,cmdtrain,6, false);
+		executeCommand1(handle, buf, 256, cmdtrain, sizeof(cmdtrain), false);
 		if (i==0) {
-			readData(handle,buf,256, false,0);
+			readData(handle, buf, 256, false,0);
 		}
 		parseTrainingData(buf, 256, i>=n);
 		int l = readData(handle,buf, 256, false,0);

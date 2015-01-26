@@ -98,7 +98,7 @@ bool pollPresence(hid_device *handle)
 	return true;
 }
 
-/** Send a command to the device */
+/** Send a command to the device; read the response. */
 int executeCommand1(hid_device *handle, unsigned char *buf, int bufsize,
                     unsigned char *command, int commandsize, bool showdata)
 {
