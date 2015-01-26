@@ -1,7 +1,8 @@
 /**
- * polar -- simple polar RS300X HRM FlowLink transfer for basic html analysis
+ * polar-ft7 -- simple polar FT7 HRM FlowLink transfer for basic html analysis
  * Copyright (C) 2012 Samo Penic <samo.penic@opensarm.si>,
  * Copyright (C) 2012 Cedric Lecuret <clecuret@gmail.com>
+ * Copyright (C) 2015 Linas Vepstas <linasvepstas@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +35,7 @@ int main(int argc, char* argv[])
 	// Mystery commands ... hardware ??
 	// unsigned char hrdwr[]      = {0x04, 0x42, 0x20};
 
-	/* Commands for the polar RS300X HRM FlowLink */
+	/* Commands for the polar HRM FlowLink */
 	unsigned char cmd1[]     = {0x01,0x00,0x02,0x00,0x00};
 	unsigned char cmd2[]     = {0x01,0x00,0x02,0x10,0x00};
 	unsigned char cmdusr[]   = {0x01,0x00,0x02,0x0E,0x00};
@@ -59,6 +60,7 @@ int main(int argc, char* argv[])
 	}
 
 	// executeCommand1(handle, buf, 256, hrdwr, sizeof(hrdwr), true);
+	fprintf(stderr, "WARNING: This code does not yet work for the FT7!!!!\n");
 
 	executeCommand1(handle, buf, 256, cmd1, sizeof(cmd1), false);
 	printf("{");
@@ -71,7 +73,7 @@ int main(int argc, char* argv[])
 	executeCommand1(handle, buf, 256, cmdusr, sizeof(cmdusr), false);
 	parseUserData(buf, 256);
 	executeCommand1(handle, buf, 256, cmd3, sizeof(cmd3), false);
-	printf(",\n'exercizes':[\n");
+	printf(",\n'exercises':[\n");
 	fflush(stdout);
 	for (i=0; i<n; i++) {
 		cmdtrain[5] = i;

@@ -31,9 +31,6 @@ int main(int argc, char* argv[])
 	int i, n;
 	bool present;
 
-	// Mystery commands ... hardware ??
-	// unsigned char hrdwr[]      = {0x04, 0x42, 0x20};
-
 	/* Commands for the polar RS300X HRM FlowLink */
 	unsigned char cmd1[]     = {0x01,0x00,0x02,0x00,0x00};
 	unsigned char cmd2[]     = {0x01,0x00,0x02,0x10,0x00};
@@ -58,8 +55,6 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 
-	// executeCommand1(handle, buf, 256, hrdwr, sizeof(hrdwr), true);
-
 	executeCommand1(handle, buf, 256, cmd1, sizeof(cmd1), false);
 	printf("{");
 	n = parseCommand1(buf, 256);
@@ -71,7 +66,7 @@ int main(int argc, char* argv[])
 	executeCommand1(handle, buf, 256, cmdusr, sizeof(cmdusr), false);
 	parseUserData(buf, 256);
 	executeCommand1(handle, buf, 256, cmd3, sizeof(cmd3), false);
-	printf(",\n'exercizes':[\n");
+	printf(",\n'exercises':[\n");
 	fflush(stdout);
 	for (i=0; i<n; i++) {
 		cmdtrain[5] = i;
