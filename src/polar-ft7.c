@@ -1,5 +1,5 @@
 /**
- * 3polar -- simple polar RS300X HRM FlowLink transfer for basic html analysis
+ * polar -- simple polar RS300X HRM FlowLink transfer for basic html analysis
  * Copyright (C) 2012 Samo Penic <samo.penic@opensarm.si>,
  * Copyright (C) 2012 Cedric Lecuret <clecuret@gmail.com>
  *
