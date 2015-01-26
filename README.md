@@ -1,30 +1,37 @@
-=Polar Flowlink 
+=Polar Flowlink=
 
 * Objective
 
-The goal of this fork was to modify origin source code to read data 
-from Polar RS300X.  Rather than original project, the program produce
-an output which is a python struct.  This struct could be send data
-to http://www.polarpersonaltrainer.com with script polarwritexml.py.
+This is a fork of the github samop/Polar-Flowlink-linux project,
+meant to read data from the Polar RS300X.  The program that is
+built, `bin/polar` produces an output which is a python struct.
+This struct can be used to send data to
+http://www.polarpersonaltrainer.com with script `polarwritexml.py.`
+
+The FlowLink here can connect to the Polar FT7, but currently
+returns garbage data for this model.
 
 * Supported OS
 
 GNU/Linux
 
-* Requirements: 
+* Requirements:
 
-For driver: libusb-dev, libudev-dev, libpq-dev
+The following need to be installed:
+`libusb-dev, libudev-dev, libpq-dev`
 
 * How to compile
 
-Firstly create bin directory in the project tree: mkdir bin
-then run ``make'' in command line: make
+Create bin directory in the project tree: `mkdir bin`
+then run `make` in command line: `make`
 
 * How to use
 
-Put your RS300X on Polar Flowlink then execute :
+Put your RS300X on the Polar Flowlink then execute :
+```
 sudo ./bin/polar > polardata
 python polarwritexml.py
+```
 
 * Inclusion of files from other authors
 
