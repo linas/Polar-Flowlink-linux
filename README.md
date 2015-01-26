@@ -8,7 +8,7 @@ built, `bin/polar` produces an output which is a python struct.
 This struct can be used to send data to
 http://www.polarpersonaltrainer.com with script `polarwritexml.py.`
 
-The FlowLink here can connect to the Polar FT7, but currently
+The FlowLink code here can connect to the Polar FT7, but currently
 returns garbage data for this model.
 
 * Supported OS
@@ -17,8 +17,8 @@ GNU/Linux
 
 * Requirements:
 
-The following need to be installed:
-`libusb-dev, libudev-dev, libpq-dev`
+The following pakcages need to be installed:
+`libusb-dev, libudev-dev`
 
 * How to compile
 
