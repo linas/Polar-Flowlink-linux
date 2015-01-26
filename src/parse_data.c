@@ -44,15 +44,15 @@ int parseSportZones(unsigned char *buf, int bufsize)
 {
 	printf(",'zones':[\n");
 	printf("\t{'id':0,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
-		buf[34],buf[33],buf[32],buf[22],buf[23]);
+		buf[34], buf[33], buf[32], buf[22], buf[23]);
 	printf("\t{'id':1,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
-		buf[37],buf[36],buf[35],buf[24],buf[25]);
+		buf[37], buf[36], buf[35], buf[24], buf[25]);
 	printf("\t{'id':2,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
-		buf[40],buf[39],buf[38],buf[26],buf[27]);
+		buf[40], buf[39], buf[38], buf[26], buf[27]);
 	printf("\t{'id':3,'zonetime':'P%xH%xM%xS','min':%d,'max':%d},\n",
-		buf[43],buf[42],buf[41],buf[28],buf[29]);
+		buf[43], buf[42], buf[41], buf[28], buf[29]);
 	printf("\t{'id':4,'zonetime':'P%xH%xM%xS','min':%d,'max':%d}\n",
-		buf[46],+buf[45],buf[44],buf[30],buf[31]);
+		buf[46], buf[45], buf[44], buf[30], buf[31]);
 	printf("]\n");
 	return buf[52];
 }

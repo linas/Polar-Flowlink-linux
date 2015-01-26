@@ -32,12 +32,12 @@ int main(int argc, char* argv[])
 	bool present;
 
 	/* Commands for the polar RS300X HRM FlowLink */
-	unsigned char cmd1[256]={0x01,0x00,0x02,0x00,0x00};
-	unsigned char cmd2[256]={0x01,0x00,0x02,0x10,0x00};
-	unsigned char cmdusr[256]={0x01,0x00,0x02,0x0E,0x00};
-	unsigned char cmdtrain[256]={0x01,0x00,0x04,0x06,0x00,0x00};
-	unsigned char cmd3[256]={0x01,0x00,0x02,0x01,0x00};
-	unsigned char cmd4[256]={0x01,0x00,0x02,0x49,0x00};
+	unsigned char cmd1[256]    = {0x01,0x00,0x02,0x00,0x00};
+	unsigned char cmd2[256]    = {0x01,0x00,0x02,0x10,0x00};
+	unsigned char cmdusr[256]  = {0x01,0x00,0x02,0x0E,0x00};
+	unsigned char cmdtrain[256]= {0x01,0x00,0x04,0x06,0x00,0x00};
+	unsigned char cmd3[256]    = {0x01,0x00,0x02,0x01,0x00};
+	unsigned char cmd4[256]    = {0x01,0x00,0x02,0x49,0x00};
 
 	handle = openHID(0x0da4, 0x0003);
 	if (handle == NULL) {
@@ -77,10 +77,10 @@ int main(int argc, char* argv[])
 				fprintf(stderr, "No lap data found!\n");
 			else
 				fprintf(stderr, "Great, I found lap data for %d laps!\n", nb);
-			l = readData(handle, buf, 256, false,0);
+			l = readData(handle, buf, 256, false, 0);
 			memcpy (&data, &buf, l);
 
-			if (nb>4) {
+			if (nb > 4) {
 				readData(handle, buf, l, false,0);
 				memmove(buf+l-3, buf, l);
 				memmove(buf, data, l);
