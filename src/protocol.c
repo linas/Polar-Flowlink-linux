@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-hid_device *openHID(int vid,int pid) {
+
+hid_device *openHID(int vid,int pid)
+{
 	wchar_t wstr[MAX_STR];
 	hid_device *handle;
 	int res;
@@ -24,29 +26,29 @@ hid_device *openHID(int vid,int pid) {
 	res = hid_get_manufacturer_string(handle, wstr, MAX_STR);
 	if (res < 0)
 		fprintf(stderr, "Error: Unable to read manufacturer string\n");
-	//printf("Manufacturer String: %ls\n", wstr);
+	fprintf(stderr, "Manufacturer String: %ls\n", wstr);
 
 	// Read the Product String
 	wstr[0] = 0x0000;
 	res = hid_get_product_string(handle, wstr, MAX_STR);
 	if (res < 0)
 		fprintf(stderr, "Error: Unable to read product string\n");
-	//printf("Product String: %ls\n", wstr);
+	fprintf(stderr, "Product String: %ls\n", wstr);
 
 	// Read the Serial Number String
 	wstr[0] = 0x0000;
 	res = hid_get_serial_number_string(handle, wstr, MAX_STR);
 	if (res < 0)
 		fprintf(stderr, "Error: Unable to read serial number string\n");
-	//printf("Serial Number String: (%d) %ls", wstr[0], wstr);
-	printf("\n");
+	fprintf(stderr, "Serial Number String: (%d) %ls", wstr[0], wstr);
+	fprintf(stderr, "\n");
 
 	// Read Indexed String 1
 	wstr[0] = 0x0000;
 	res = hid_get_indexed_string(handle, 1, wstr, MAX_STR);
 	if (res < 0)
 		fprintf(stderr, "Error: Unable to read indexed string 1\n");
-	//printf("Indexed String 1: %ls\n", wstr);
+	fprintf(stderr, "Indexed String 1: %ls\n", wstr);
 
 	// Set the hid_read() function to be non-blocking.
 	hid_set_nonblocking(handle, 1);
